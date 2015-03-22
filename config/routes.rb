@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'users/new'
+
   root 'static_pages#home'
   # Makes two routes
   # help_path -> /help
@@ -6,6 +8,7 @@ Rails.application.routes.draw do
   get 'help' => 'static_pages#help'
   get 'about' => 'static_pages#about'
   get 'contact' => 'static_pages#contact'
+  get 'register' => 'users#new'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
