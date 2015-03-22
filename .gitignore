@@ -18,3 +18,9 @@
 
 # Ignore Spring files.
 /spring/*.pid
+
+# Fuck you .DS_Store
+.DS_Store
+
+# Rubmine files.
+.idea
