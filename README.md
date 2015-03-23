@@ -12,7 +12,7 @@ rails server -b 0.0.0.0
 
 ## tests
 
-To run guard
+To run [guard](https://github.com/guard/guard)
 
 ```bash
 bundle exec guard
