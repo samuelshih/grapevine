@@ -56,4 +56,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not @user.valid?
   end
 
+  test 'authenticated? should return false for a user with nil digest' do
+    assert_not @user.authenticated?('') # Token value doesn't matter b/c should error before it ever gets used
+  end
 end
