@@ -12,3 +12,8 @@ login_test:
   name: Bob Builder
   email: email@example.com
   password_digest: <%= User.digest('password') %>
+
+nsa:
+  name: NSA Boy
+  email: imwatching@nsa.gov
+  password_digest: <%= User.digest('password') %>
