@@ -2,6 +2,10 @@ require 'test_helper'
 
 class UsersRegisterTest < ActionDispatch::IntegrationTest
 
+  def setup
+    ActionMailer::Base.deliveries.clear
+  end
+
   test 'invalid registration' do
     get register_path # post and get technically unnecessary
 
@@ -17,18 +21,38 @@ class UsersRegisterTest < ActionDispatch::IntegrationTest
     assert_select 'div.field_with_errors'
   end
 
-  test 'valid registration' do
+  test 'valid registration with account activation' do
     get register_path
-
     assert_difference 'User.count', 1 do
-      post_via_redirect users_path, user: { name: 'Billy Bob',
-                                            email: 'bob@billy.com',
-                                            password: 'super_man_billy',
-                                            password_confirmation: 'super_man_billy'
-                                  }
+      post users_path, user: { name: 'Example User',
+                               email: 'user@example.com',
+                               password: 'password',
+                               password_confirmation: 'password' }
     end
-    # assert_template 'users/show'
-    # assert is_logged_in?
+
+    assert_equal 1, ActionMailer::Base.deliveries.size
+    user = assigns(:user)
+    assert_not user.activated?
+
+    # Try to log in before activation.
+    log_in_as(user)
+    assert_not is_logged_in?
+
+    # Invalid activation token
+    get edit_account_activation_path("invalid token")
+    assert_not is_logged_in?
+
+    # Valid token, wrong email
+    get edit_account_activation_path(user.activation_token, email: 'wrong')
+    assert_not is_logged_in?
+
+    # Valid activation token
+    get edit_account_activation_path(user.activation_token, email: user.email)
+    assert user.reload.activated?
+    follow_redirect!
+
+    assert_template 'users/show'
+    assert is_logged_in?
   end
 
 end
