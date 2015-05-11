@@ -17,9 +17,10 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)
     if @user.save
-      log_in @user
-      flash[:success] = 'Welcome to Grapevine!'
-      redirect_to @user # user_url(@user) rails synonymous
+      UserMailer.account_activation(@user).deliver_now
+      flash[:info] = 'Welcome to Grapevine! Please check your email to activate your account.'
+      redirect_to root_url
+      # @user == user_url(@user) rails synonymous
     else
       render 'new'
     end
