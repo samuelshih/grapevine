@@ -3,13 +3,14 @@ require 'test_helper'
 class UserTest < ActiveSupport::TestCase
 
   def setup
-    @user = User.new(name: 'Example Name', email: 'email@example.com', password: 'password', password_confirmation: 'password')
+    # @user = User.new(name: 'Example Name', email: 'email@example.com', password: 'password', password_confirmation: 'password')
+    @user = users(:login_test) # Use fixture instead
   end
 
   # WHY IS THIS BROKE
-  # test 'should be valid' do
-  #   assert @user.valid?
-  # end
+  test 'should be valid' do
+    assert @user.valid?
+  end
 
   test 'name should be present' do
     @user.name = ''
@@ -58,5 +59,13 @@ class UserTest < ActiveSupport::TestCase
 
   test 'authenticated? should return false for a user with nil digest' do
     assert_not @user.authenticated?(:remember, '') # Token value doesn't matter b/c should error before it ever gets used
+  end
+
+  test 'associated posts should be destroyed' do
+    @user.save
+    @user.posts.create!(content: 'Lorem ipsum')
+    assert_difference 'Post.count', -1 do
+      @user.destroy
+    end
   end
 end
