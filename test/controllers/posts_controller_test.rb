@@ -22,7 +22,7 @@ class PostsControllerTest < ActionController::TestCase
 
   test 'should redirect destroy for wrong post' do
     log_in_as(users(:login_test))
-    post = posts(:nsa)
+    post = posts(:ants)
     assert_no_difference 'Post.count' do
       delete :destroy, id: post
     end
