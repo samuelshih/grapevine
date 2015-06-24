@@ -22,5 +22,8 @@
 # Fuck you .DS_Store
 .DS_Store
 
-# Rubmine files.
+# Rubymine files.
 .idea
+
+# Ignore uploaded test images
+/public/uploads
