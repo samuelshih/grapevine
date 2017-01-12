@@ -22,6 +22,13 @@ class User < ActiveRecord::Base
 
   has_secure_password # has_secure_password enforces presence of password
 
+  """
+  1) The ability to save a securely hashed password_digest attribute to the database
+  2) A pair of virtual attributes18 (password and password_confirmation),
+   including presence validations upon object creation and a validation requiring that they match
+  3) An authenticate method that returns the user when the password is correct (and false otherwise)
+  """
+
   # Converts all email to lower case
   def downcase_email
     self.email = email.downcase

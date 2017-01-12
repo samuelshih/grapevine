@@ -4,6 +4,9 @@ class SessionsController < ApplicationController
   end
 
   def create
+    # POST action
+    # using an instance variable @user can allow integration test
+    # to have access to virtual attributes remember_token
     user = User.find_by(email: params[:session][:email].downcase)
     if user && user.authenticate(params[:session][:password])
       if user.activated?

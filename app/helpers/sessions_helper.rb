@@ -15,6 +15,21 @@ module SessionsHelper
     user == current_user
   end
 
+  """
+  === Potential Bugs ===
+  A potential bug can happen in this case:
+    1) a user logs into one browser, FireFox while also logged in in another browser, Chrome
+    2) when the user logs out of firefox, user.remember_digest in DB is set to nil
+    3) user closes chrome -> session[:user_id] is deleted
+    4) when chrome is relaunched, in sessions_helper#current_user, the second if will be
+    evaluated, and user.authenticated?(cookies[:remember_token]) will throw an error
+    becuase remember_digest was deleted in firefox log out.
+
+    Fix:
+    in user#authenticated? return false if remember_digest.nil?
+    Catch this case before it can be evaluated
+    """
+
   def current_user
     if (user_id = session[:user_id])
       @current_user ||= User.find_by(id: user_id)
@@ -36,6 +51,15 @@ module SessionsHelper
     cookies.delete(:user_id)
     cookies.delete(:remember_token)
   end
+
+  """
+  === Potential Bugs ===
+  A potential bug can happen in log_out if a user has two windows opened,
+  logs out in one window then tries to log out in the second. current_user will
+  be set to nil on the first logout, then will have a method error trying to call
+  forget on a nil object in second log out.
+  The fix to this: Only allow logouts if a user is already logged in. sessionsController#destroy
+  """
 
   def log_out
     forget(current_user)
